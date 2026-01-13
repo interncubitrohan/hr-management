@@ -9,6 +9,29 @@ export default function Payroll() {
     { id: 1, name: "January 2024", start: "2024-01-01", end: "2024-01-31", payDate: "2024-01-31", status: "Completed" },
     { id: 2, name: "February 2024", start: "2024-02-01", end: "2024-02-29", payDate: "2024-02-29", status: "Active" },
   ]);
+
+  const [newCycle, setNewCycle] = useState({
+    name: "",
+    start: "",
+    end: "",
+  });
+
+  const handleAddCycle = () => {
+    if (!newCycle.name || !newCycle.start || !newCycle.end) return;
+
+    const newId = billingCycles.length + 1;
+    const cycleToAdd = {
+      id: newId,
+      name: newCycle.name,
+      start: newCycle.start,
+      end: newCycle.end,
+      payDate: newCycle.end, // Default pay date to end date
+      status: "Active",
+    };
+
+    setBillingCycles([...billingCycles, cycleToAdd]);
+    setNewCycle({ name: "", start: "", end: "" });
+  };
   const salaryDetails = {
     basic: 45000,
     hra: 18000,
@@ -28,6 +51,27 @@ export default function Payroll() {
   const netPay = totalEarnings - totalDeductions;
   return (<div className="mx-auto max-w-7xl">
     <PageBreadCrumb pageTitle="Payroll" />
+
+    <div className="mb-6 flex space-x-1 rounded-xl bg-gray-100 p-1 dark:bg-meta-4">
+      <button
+        className={`w-full rounded-lg py-2.5 text-sm font-medium leading-5 ring-white ring-opacity-60 ring-offset-2 ring-offset-brand-500 focus:outline-none focus:ring-2 ${activeTab === 'payslip'
+            ? 'bg-white text-brand-500 shadow-sm dark:bg-boxdark dark:text-white'
+            : 'text-gray-500 hover:bg-white/[0.12] hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'
+          }`}
+        onClick={() => setActiveTab('payslip')}
+      >
+        My Payslip
+      </button>
+      <button
+        className={`w-full rounded-lg py-2.5 text-sm font-medium leading-5 ring-white ring-opacity-60 ring-offset-2 ring-offset-brand-500 focus:outline-none focus:ring-2 ${activeTab === 'admin'
+            ? 'bg-white text-brand-500 shadow-sm dark:bg-boxdark dark:text-white'
+            : 'text-gray-500 hover:bg-white/[0.12] hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'
+          }`}
+        onClick={() => setActiveTab('admin')}
+      >
+        Payroll Admin (Billing Cycles)
+      </button>
+    </div>
 
     {activeTab === "payslip" ? (
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -131,19 +175,35 @@ export default function Payroll() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
               <Label>Cycle Name</Label>
-              <InputField type="text" placeholder="e.g. March 2024" />
+              <InputField
+                type="text"
+                placeholder="e.g. March 2024"
+                value={newCycle.name}
+                onChange={(e) => setNewCycle({ ...newCycle, name: e.target.value })}
+              />
             </div>
             <div>
               <Label>Start Date</Label>
-              <InputField type="date" />
+              <InputField
+                type="date"
+                value={newCycle.start}
+                onChange={(e) => setNewCycle({ ...newCycle, start: e.target.value })}
+              />
             </div>
             <div>
               <Label>End Date</Label>
-              <InputField type="date" />
+              <InputField
+                type="date"
+                value={newCycle.end}
+                onChange={(e) => setNewCycle({ ...newCycle, end: e.target.value })}
+              />
             </div>
           </div>
           <div className="mt-4 text-right">
-            <button className="rounded bg-brand-500 px-6 py-2 font-medium text-white hover:bg-opacity-90">
+            <button
+              onClick={handleAddCycle}
+              className="rounded bg-brand-500 px-6 py-2 font-medium text-white hover:bg-opacity-90"
+            >
               Create Cycle
             </button>
           </div>

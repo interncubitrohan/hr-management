@@ -139,6 +139,26 @@ export default function Reimbursements() {
               ))
             )}
           </div>
+
+          <h3 className="mt-8 mb-6 text-xl font-semibold text-black dark:text-white">Processed Claims History</h3>
+          <div className="flex flex-col gap-4">
+            {claims.filter(c => c.status !== "Pending").map((claim) => (
+              <div key={claim.id} className="rounded-lg border border-stroke bg-white p-4 dark:border-strokedark dark:bg-boxdark opacity-75">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <h4 className="text-base font-semibold text-black dark:text-white">{claim.type}</h4>
+                      <Badge color={getStatusColor(claim.status)}>{claim.status}</Badge>
+                    </div>
+                    <p className="mt-1 text-xs text-gray-400">Date: {claim.date}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-black dark:text-white">₹{claim.amount.toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>

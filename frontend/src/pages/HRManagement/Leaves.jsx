@@ -59,10 +59,27 @@ export default function Leaves() {
   ];
   const handleApplySubmit = (e) => {
     e.preventDefault();
-    console.log("Leave Applied:", formData);
-    // Reset form and typically show success message
+    if (!formData.leaveType || !formData.startDate || !formData.endDate || !formData.reason) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    const newRequest = {
+      id: requests.length + 1,
+      employeeName: "Current User", // In a real app, this would come from auth context
+      leaveType: formData.leaveType,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      reason: formData.reason,
+      status: "Pending",
+      requestDate: new Date().toISOString().split('T')[0],
+    };
+
+    setRequests([newRequest, ...requests]);
+    console.log("Leave Applied:", newRequest);
+    // Reset form and switch tab
     setFormData({ leaveType: "", startDate: "", endDate: "", reason: "" });
-    setActiveTab(1); // Switch to requests tab to "view" it (simulation)
+    setActiveTab(1);
   };
   const handleAction = (id, status) => {
     setRequests((prev) => prev.map((req) => (req.id === id ? { ...req, status } : req)));
